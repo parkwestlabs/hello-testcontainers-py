@@ -31,3 +31,38 @@ dev = [
 
 [tool.fastapi]
 entrypoint = "hello_testcontainers_py.main:app"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+# 以下、Gemini お勧め ruff 設定
+[tool.ruff]
+# ソースコードのルートを指定
+src = ["src"]
+line-length = 88 # 1行の最大文字数（Blackの標準と同じ）
+
+[tool.ruff.lint]
+# 有効化するルールのカテゴリ（コードで指定）
+select = [
+    "E",    # pycodestyle (エラー)
+    "W",    # pycodestyle (警告)
+    "F",    # Pyflakes (未使用のインポートや未定義の変数などを検出。必須)
+    "I",    # isort (インポートの自動並び替え。必須)
+    "B",    # flake8-bugbear (バグになりやすい怪しいコードの検出)
+    "C4",   # flake8-comprehensions (リスト内包表記の無駄な書き方を指摘)
+    "UP",   # pyupgrade (古いPython構文を最新に自動変換)
+    "ARG",  # flake8-unused-arguments (使われていない関数の引数を検出)
+    "PT",   # flake8-pytest-style (pytestの書き方の統一)
+]
+
+# selectした中で、あえて「無効」にしたい具体的なルール番号
+ignore = [
+    "E501", # 1行の文字数制限オーバー（フォーマッタに任せるためLint側では無視）
+]
+
+# ファイルごとに特定のルールを無視する設定
+[tool.ruff.lint.per-file-ignores]
+# テストコードでは、関数の引数が不使用（ARG001）でも警告を出さない（fixture等で使うため）
+"tests/**/*.py" = ["ARG001"]
+"src/**/__init__.py" = ["F401"] # __init__.pyでの未使用インポートは公開用のため許可
