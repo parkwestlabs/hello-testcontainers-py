@@ -12,3 +12,6 @@ wheels/
 # caches
 .ruff_cache/
 .pytest_cache/
+
+# Environment / secrets
+.env
