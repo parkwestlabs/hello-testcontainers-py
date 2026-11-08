@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from hello_testcontainers_py.db import get_db
 from hello_testcontainers_py.models import User
 
 # ==========================================
@@ -15,12 +16,6 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-
-# 依存注入（DI）用の関数。テスト時に fixture で上書き（オーバーライド）します
-async def get_db() -> AsyncSession:
-    # 実際の本番環境では hello_testcontainers_py.db.create_session_factory(engine) で生成して yield する
-    raise NotImplementedError()
 
 
 @app.post("/users")

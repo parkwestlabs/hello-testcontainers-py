@@ -10,8 +10,8 @@ from sqlalchemy.ext.asyncio import (
 )
 from testcontainers.community.postgres import PostgresContainer
 
-from hello_testcontainers_py.db import create_session_factory
-from hello_testcontainers_py.main import app, get_db
+from hello_testcontainers_py.db import create_session_factory, get_db
+from hello_testcontainers_py.main import app
 from hello_testcontainers_py.models import Base
 
 # ==========================================
