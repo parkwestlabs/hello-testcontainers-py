@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 from sqlalchemy import func, select
 from sqlalchemy.dialects import postgresql
@@ -19,6 +20,13 @@ async def test_create_user_endpoint(client: AsyncClient):
     body = response.json()
     assert body["name"] == "アリス"
     assert isinstance(body["id"], int)
+
+
+@pytest.mark.parametrize("name", ["", "a" * 51])
+async def test_create_user_rejects_invalid_name_length(client: AsyncClient, name: str):
+    response = await client.post("/users", params={"name": name})
+
+    assert response.status_code == 422
 
 
 async def test_db_is_isolated_between_tests(db_session: AsyncSession):

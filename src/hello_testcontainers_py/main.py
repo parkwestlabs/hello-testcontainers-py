@@ -2,7 +2,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Annotated
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hello_testcontainers_py.db import get_db, get_engine
@@ -35,7 +35,10 @@ def read_root():
 
 
 @app.post("/users")
-async def create_user(name: str, db: Annotated[AsyncSession, Depends(get_db)]):
+async def create_user(
+    name: Annotated[str, Query(min_length=1, max_length=50)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
     new_user = User(name=name)
 
     db.add(new_user)
