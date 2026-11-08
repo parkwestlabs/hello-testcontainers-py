@@ -1,7 +1,7 @@
 [project]
 name = "hello-testcontainers-py"
 version = "0.1.0"
-description = "Add your description here"
+description = "Sample of Testcontainers integration tests for FastAPI and async SQLAlchemy"
 readme = "README.md"
 authors = [
     { name = "parkwestlabs", email = "281970052+parkwestlabs@users.noreply.github.com" }
