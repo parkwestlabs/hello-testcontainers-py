@@ -16,7 +16,7 @@ def get_engine() -> AsyncEngine:
     """DATABASE_URL 環境変数から Engine を作成します（初回呼び出し時のみ作成）"""
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
-        raise RuntimeError("環境変数 DATABASE_URL が設定されていません")
+        raise RuntimeError("DATABASE_URL environment variable is not set")
     return create_async_engine(database_url)
 
 
