@@ -32,6 +32,8 @@ def test_user_create_table_sql():
     sql = str(CreateTable(User.__table__).compile(dialect=postgresql.dialect()))  # pyright: ignore[reportArgumentType]
 
     # 改行やインデントの違いを無視して比較する
-    assert " ".join(sql.split()) == (
-        "CREATE TABLE users ( id SERIAL NOT NULL, name VARCHAR NOT NULL, PRIMARY KEY (id) )"
+    expected = (
+        "CREATE TABLE users ( "
+        "id SERIAL NOT NULL, name VARCHAR NOT NULL, PRIMARY KEY (id) )"
     )
+    assert " ".join(sql.split()) == expected

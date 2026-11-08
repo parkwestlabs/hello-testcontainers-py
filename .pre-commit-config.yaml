@@ -1,0 +1,11 @@
+# コミット前に ./check.sh（ruff check / ruff format --diff / pyright）を実行します
+# 初回のみ: uv run pre-commit install
+repos:
+  - repo: local
+    hooks:
+      - id: check
+        name: check.sh (ruff, format, pyright)
+        entry: ./check.sh
+        language: system
+        pass_filenames: false
+        always_run: true

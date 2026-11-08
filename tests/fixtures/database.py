@@ -45,7 +45,7 @@ async def async_db_engine(postgres_container_url: str) -> AsyncGenerator[AsyncEn
 async def db_session(async_db_engine: AsyncEngine) -> AsyncGenerator[AsyncSession]:
     """テスト1ケースごとに独立したセッションを提供します。テスト終了後に全変更を破棄します"""
     async with async_db_engine.connect() as conn:
-        # 外側のトランザクションを開始。テスト終了時にここを rollback して全変更を取り消す
+        # 外側のトランザクションを開始。テスト終了時に rollback して変更を取り消す
         outer = await conn.begin()
 
         # join_transaction_mode="create_savepoint": セッション内の commit() は
