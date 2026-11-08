@@ -27,6 +27,11 @@ async def test_db_is_isolated_between_tests(db_session: AsyncSession):
     assert count == 0
 
 
-async def test_print_schema():
-    """show CREATE TABLE schema SQL"""
-    print(CreateTable(User.__table__).compile(dialect=postgresql.dialect()))  # pyright: ignore[reportArgumentType]
+def test_user_create_table_sql():
+    """User モデルから生成される CREATE TABLE 文を検証します"""
+    sql = str(CreateTable(User.__table__).compile(dialect=postgresql.dialect()))  # pyright: ignore[reportArgumentType]
+
+    # 改行やインデントの違いを無視して比較する
+    assert " ".join(sql.split()) == (
+        "CREATE TABLE users ( id SERIAL NOT NULL, name VARCHAR NOT NULL, PRIMARY KEY (id) )"
+    )
