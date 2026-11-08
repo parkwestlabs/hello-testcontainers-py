@@ -19,7 +19,7 @@ def read_root():
 
 # 依存注入（DI）用の関数。テスト時に fixture で上書き（オーバーライド）します
 async def get_db() -> AsyncSession:
-    # 実際の本番環境では async_sessionmaker 等から生成して yield する
+    # 実際の本番環境では hello_testcontainers_py.db.create_session_factory(engine) で生成して yield する
     raise NotImplementedError()
 
 

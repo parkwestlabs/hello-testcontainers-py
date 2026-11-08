@@ -6,11 +6,11 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
-    async_sessionmaker,
     create_async_engine,
 )
 from testcontainers.community.postgres import PostgresContainer
 
+from hello_testcontainers_py.db import create_session_factory
 from hello_testcontainers_py.main import app, get_db
 from hello_testcontainers_py.models import Base
 
@@ -43,14 +43,19 @@ async def async_db_engine(postgres_container_url: str) -> AsyncGenerator[AsyncEn
 
 @pytest_asyncio.fixture()
 async def db_session(async_db_engine: AsyncEngine) -> AsyncGenerator[AsyncSession]:
-    """テスト1ケースごとに独立したクリーンなセッションを提供します"""
-    async_session_local = async_sessionmaker(
-        bind=async_db_engine, class_=AsyncSession, expire_on_commit=False
-    )
+    """テスト1ケースごとに独立したセッションを提供します。テスト終了後に全変更を破棄します"""
+    async with async_db_engine.connect() as conn:
+        # 外側のトランザクションを開始。テスト終了時にここを rollback して全変更を取り消す
+        outer = await conn.begin()
 
-    async with async_session_local() as session, session.begin():
-        # session.begin() でトランザクションを開始（テスト終了後にロールバックするため）
-        yield session
+        # join_transaction_mode="create_savepoint": セッション内の commit() は
+        # SAVEPOINT の解放だけを行い、外側のトランザクションは確定させない
+        async with create_session_factory(conn)(
+            join_transaction_mode="create_savepoint"
+        ) as session:
+            yield session
+
+        await outer.rollback()
 
 
 @pytest_asyncio.fixture()
